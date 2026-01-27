@@ -1,0 +1,17 @@
+<h2>Total Expense: {{ total }}</h2>
+
+<table border="1">
+<tr>
+  <th>Amount</th><th>Category</th><th>Date</th><th>Description</th>
+</tr>
+{% for e in expenses %}
+<tr>
+  <td>{{ e.amount }}</td>
+  <td>{{ e.category }}</td>
+  <td>{{ e.date }}</td>
+  <td>{{ e.description }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<a href="/add-expense">Add Expense</a>
