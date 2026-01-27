@@ -5,3 +5,19 @@
   <input name="description">
   <button>Add</button>
 </form>
+
+<link rel="stylesheet" href="/static/style.css">
+
+<div class="container">
+  <h2>Add Expense</h2>
+
+  <form method="post" action="/add-expense">
+    <input name="amount" type="number" placeholder="Amount" required>
+    <input name="category" placeholder="Category" required>
+    <input name="date" type="date" required>
+    <input name="description" placeholder="Description">
+    <button>Add Expense</button>
+  </form>
+
+  <a href="/dashboard">Back to Dashboard</a>
+</div>
