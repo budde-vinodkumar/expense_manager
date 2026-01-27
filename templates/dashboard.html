@@ -15,3 +15,34 @@
 </table>
 
 <a href="/add-expense">Add Expense</a>
+<link rel="stylesheet" href="/static/style.css">
+
+<div class="top-bar">
+  <h2>Expense Dashboard</h2>
+</div>
+
+<div class="dashboard-container">
+  <h3>Total Expense: ₹ {{ total }}</h3>
+
+  <table>
+    <tr>
+      <th>Amount</th>
+      <th>Category</th>
+      <th>Date</th>
+      <th>Description</th>
+    </tr>
+
+    {% for e in expenses %}
+    <tr>
+      <td>₹ {{ e.amount }}</td>
+      <td>{{ e.category }}</td>
+      <td>{{ e.date }}</td>
+      <td>{{ e.description }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <a href="/add-expense">
+    <button style="margin-top:20px;">Add New Expense</button>
+  </a>
+</div>
