@@ -1,7 +1,8 @@
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, redirect
 from database import create_tables
 from auth import register_user, login_user
 from expense import add_expense, get_expenses
+
 
 app = Flask(__name__)
 app.secret_key = "secretkey"
