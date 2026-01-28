@@ -39,6 +39,15 @@ def add_expense_page():
 def add_expense_post():
     return add_expense()
 
+@app.route("/register")
+def register():
+    return render_template("register.html")
+
+@app.route("/register", methods=["POST"])
+def register_post():
+    return register_user()
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 import sqlite3
