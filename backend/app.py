@@ -40,3 +40,14 @@ def add_expense_post():
 
 if __name__ == "__main__":
     app.run(debug=True)
+import sqlite3
+
+conn = sqlite3.connect("expense.db")
+cursor = conn.cursor()
+
+cursor.execute("SELECT * FROM expenses")
+rows = cursor.fetchall()
+
+print(rows)
+
+conn.close()

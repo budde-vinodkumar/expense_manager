@@ -1,7 +1,11 @@
 import sqlite3
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "..", "expense.db")
 
 def get_db_connection():
-    conn = sqlite3.connect("expense.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -20,10 +24,10 @@ def create_tables():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS expenses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        amount REAL,
-        category TEXT,
-        date TEXT,
+        user_id INTEGER NOT NULL,
+        amount REAL NOT NULL,
+        category TEXT NOT NULL,
+        date TEXT NOT NULL,
         description TEXT,
         FOREIGN KEY(user_id) REFERENCES users(id)
     )
