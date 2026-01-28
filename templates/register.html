@@ -1,13 +1,18 @@
 <link rel="stylesheet" href="/static/style.css">
+<script src="/static/app.js"></script>
 
 <div class="container">
-  <h1>Register</h1>
+  <h2>Create Account</h2>
 
-  <form method="post" action="/register">
+  <form method="post" action="/register" id="registerForm">
     <input name="username" placeholder="Username" required>
     <input name="password" type="password" placeholder="Password" required>
-    <button>Register</button>
+    <button id="registerBtn">Register</button>
   </form>
 
   <a href="/">Back to Login</a>
 </div>
+
+<script>
+  handleSubmit("registerBtn", "registerForm");
+</script>
