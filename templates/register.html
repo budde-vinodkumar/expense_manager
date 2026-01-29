@@ -3,29 +3,24 @@
 <head>
   <title>Register</title>
   <link rel="stylesheet" href="/static/style.css">
-  <script src="/static/app.js"></script>
 </head>
 <body>
 
 <div class="container">
-  <h2>Create Account</h2>
+  <h2>Register</h2>
 
   {% if error %}
-    <p style="color:red; text-align:center;">{{ error }}</p>
+    <p class="error">{{ error }}</p>
   {% endif %}
 
-  <form method="post" action="/register" id="registerForm">
-    <input name="username" placeholder="Username" required>
-    <input name="password" type="password" placeholder="Password" required>
-    <button id="registerBtn">Register</button>
+  <form method="post" action="/register">
+    <input name="username" required placeholder="Username">
+    <input name="password" type="password" required placeholder="Password">
+    <button>Register</button>
   </form>
 
-  <a href="/">Already have an account? Login</a>
+  <a href="/">Back to login</a>
 </div>
-
-<script>
-  handleSubmit("registerBtn", "registerForm");
-</script>
 
 </body>
 </html>
