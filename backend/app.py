@@ -30,9 +30,15 @@ def dashboard():
         return redirect("/")
 
     expenses = get_expenses(session["user_id"])
+
     total = sum(float(e["amount"]) for e in expenses)
 
-    return render_template("dashboard.html", expenses=expenses, total=total)
+    return render_template(
+        "dashboard.html",
+        expenses=expenses,
+        total=total
+    )
+
 
 @app.route("/add-expense")
 def add_expense_page():
