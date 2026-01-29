@@ -28,8 +28,7 @@ def create_tables():
         amount REAL NOT NULL,
         category TEXT NOT NULL,
         date TEXT NOT NULL,
-        description TEXT,
-        FOREIGN KEY(user_id) REFERENCES users(id)
+        description TEXT
     )
     """)
 
