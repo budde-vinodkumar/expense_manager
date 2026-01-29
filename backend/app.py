@@ -9,6 +9,7 @@ app = Flask(
     template_folder="../templates",
     static_folder="../static"
 )
+app.secret_key = "secret123"
 
 
 create_tables()
