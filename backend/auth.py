@@ -41,6 +41,9 @@ def login_user():
         (username, password)
     ).fetchone()
 
+    print("LOGIN ROUTE HIT")
+
+
     conn.close()
 
     if user:
