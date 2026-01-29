@@ -1,30 +1,18 @@
-<h2>Total Expense: {{ total }}</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
 
-<table border="1">
-<tr>
-  <th>Amount</th><th>Category</th><th>Date</th><th>Description</th>
-</tr>
-{% for e in expenses %}
-<tr>
-  <td>{{ e.amount }}</td>
-  <td>{{ e.category }}</td>
-  <td>{{ e.date }}</td>
-  <td>{{ e.description }}</td>
-</tr>
-{% endfor %}
-</table>
-
-<a href="/add-expense">Add Expense</a>
-<link rel="stylesheet" href="/static/style.css">
-
-<div class="top-bar">
+<div class="container" style="width:90%;">
   <h2>Expense Dashboard</h2>
-</div>
-
-<div class="dashboard-container">
   <h3>Total Expense: ₹ {{ total }}</h3>
 
-  <table>
+  <!-- TABLE -->
+  <table border="1" width="100%">
     <tr>
       <th>Amount</th>
       <th>Category</th>
@@ -42,7 +30,47 @@
     {% endfor %}
   </table>
 
+  <!-- GRAPH -->
+  <canvas id="expenseChart" style="margin-top:30px;"></canvas>
+
   <a href="/add-expense">
-    <button style="margin-top:20px;">Add New Expense</button>
+    <button style="margin-top:20px;">Add Expense</button>
+  </a>
+
+  <a href="/logout">
+    <button style="background:#ef4444; margin-top:10px;">Logout</button>
   </a>
 </div>
+
+<script>
+  const expenses = {{ expenses | tojson }};
+
+  const categoryTotals = {};
+
+  expenses.forEach(e => {
+    if (categoryTotals[e.category]) {
+      categoryTotals[e.category] += parseFloat(e.amount);
+    } else {
+      categoryTotals[e.category] = parseFloat(e.amount);
+    }
+  });
+
+  const ctx = document.getElementById('expenseChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: Object.keys(categoryTotals),
+      datasets: [{
+        data: Object.values(categoryTotals),
+        backgroundColor: [
+          '#6366f1','#22c55e','#f59e0b',
+          '#ef4444','#14b8a6','#a855f7'
+        ]
+      }]
+    }
+  });
+</script>
+
+</body>
+</html>
