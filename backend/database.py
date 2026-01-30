@@ -31,6 +31,16 @@ def create_tables():
         description TEXT
     )
     """)
+    cursor.execute("""
+CREATE TABLE IF NOT EXISTS income (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    amount REAL NOT NULL,
+    source TEXT NOT NULL,
+    date TEXT NOT NULL
+)
+""")
+
 
     conn.commit()
     conn.close()
