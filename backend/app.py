@@ -3,6 +3,12 @@ from database import create_tables
 from auth import register_user, login_user
 from expense import add_expense, get_expenses
 from expense import add_expense, get_expenses, edit_expense, delete_expense
+from expense import (
+    add_expense, get_expenses,
+    edit_expense, delete_expense,
+    add_income, get_total_income
+)
+
 
 
 app = Flask(
@@ -37,19 +43,21 @@ def register_post():
 def dashboard():
     if "user_id" not in session:
         return redirect("/")
-    return render_template("dashboard.html", expenses=[], total=0)
 
-@app.route("/dashboard", methods=["POST"])
-def dashboard_post():
     expenses = get_expenses(session["user_id"])
+    total_expense = sum(float(e["amount"]) for e in expenses)
 
-    total = sum(float(e["amount"]) for e in expenses)
+    total_income = get_total_income(session["user_id"])
+    balance = total_income - total_expense
 
     return render_template(
         "dashboard.html",
         expenses=expenses,
-        total=total
+        total=total_expense,
+        income=total_income,
+        balance=balance
     )
+
 
 
 @app.route("/add-expense")
@@ -77,6 +85,15 @@ def edit_expense_route(expense_id):
 @app.route("/delete-expense/<int:expense_id>")
 def delete_expense_route(expense_id):
     return delete_expense(expense_id)
+
+@app.route("/add-income")
+def add_income_page():
+    return render_template("add_income.html")
+
+@app.route("/add-income", methods=["POST"])
+def add_income_post():
+    return add_income()
+
 
 
 
