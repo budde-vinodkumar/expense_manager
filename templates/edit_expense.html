@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Expense</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+  <h2>Edit Expense</h2>
+
+  <form method="post">
+    <input type="number" name="amount" value="{{ expense.amount }}" required>
+    <input type="text" name="category" value="{{ expense.category }}" required>
+    <input type="date" name="date" value="{{ expense.date }}" required>
+    <input type="text" name="description" value="{{ expense.description }}">
+    <button type="submit">Update Expense</button>
+  </form>
+
+  <a href="/dashboard">Back to Dashboard</a>
+</div>
+
+</body>
+</html>
