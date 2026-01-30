@@ -2,6 +2,8 @@ from flask import Flask, render_template, session, redirect
 from database import create_tables
 from auth import register_user, login_user
 from expense import add_expense, get_expenses
+from expense import add_expense, get_expenses, edit_expense, delete_expense
+
 
 app = Flask(
     __name__,
@@ -66,6 +68,16 @@ def logout():
 @app.route("/test")
 def test():
     return "TEST PAGE WORKING"
+
+@app.route("/edit-expense/<int:expense_id>", methods=["GET", "POST"])
+def edit_expense_route(expense_id):
+    return edit_expense(expense_id)
+
+
+@app.route("/delete-expense/<int:expense_id>")
+def delete_expense_route(expense_id):
+    return delete_expense(expense_id)
+
 
 
 if __name__ == "__main__":
