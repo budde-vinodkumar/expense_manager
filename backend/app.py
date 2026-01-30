@@ -3,7 +3,6 @@ from database import create_tables
 from auth import register_user, login_user
 from expense import add_expense, get_expenses
 
-
 app = Flask(
     __name__,
     template_folder="../templates",
@@ -11,8 +10,8 @@ app = Flask(
 )
 app.secret_key = "secret123"
 
-
 create_tables()
+
 
 @app.route("/")
 def login():
@@ -27,7 +26,6 @@ def login_post():
 @app.route("/register")
 def register():
     return render_template("register.html")
-
 
 @app.route("/register", methods=["POST"])
 def register_post():
