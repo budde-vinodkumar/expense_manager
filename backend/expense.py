@@ -52,3 +52,37 @@ def delete_expense(expense_id):
     conn.commit()
     conn.close()
     return redirect("/dashboard")
+
+def add_income():
+    if "user_id" not in session:
+        return redirect("/")
+
+    amount = request.form["amount"]
+    source = request.form["source"]
+    date = request.form["date"]
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO income (user_id, amount, source, date)
+        VALUES (?, ?, ?, ?)
+    """, (session["user_id"], amount, source, date))
+
+    conn.commit()
+    conn.close()
+    return redirect("/dashboard")
+
+
+def get_total_income(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    result = cursor.execute(
+        "SELECT SUM(amount) FROM income WHERE user_id=?",
+        (user_id,)
+    ).fetchone()
+
+    conn.close()
+    return result[0] if result[0] else 0
+
