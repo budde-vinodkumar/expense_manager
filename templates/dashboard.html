@@ -13,22 +13,31 @@
 
   <!-- TABLE -->
   <table border="1" width="100%">
-    <tr>
-      <th>Amount</th>
-      <th>Category</th>
-      <th>Date</th>
-      <th>Description</th>
-    </tr>
+  <tr>
+    <th>Amount</th>
+    <th>Category</th>
+    <th>Date</th>
+    <th>Description</th>
+    <th>Actions</th>
+  </tr>
 
-    {% for e in expenses %}
-    <tr>
-      <td>₹ {{ e.amount }}</td>
-      <td>{{ e.category }}</td>
-      <td>{{ e.date }}</td>
-      <td>{{ e.description }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+  {% for e in expenses %}
+  <tr>
+    <td>₹ {{ e.amount }}</td>
+    <td>{{ e.category }}</td>
+    <td>{{ e.date }}</td>
+    <td>{{ e.description }}</td>
+    <td>
+      <a href="/edit-expense/{{ e.id }}">Edit</a> |
+      <a href="/delete-expense/{{ e.id }}"
+         onclick="return confirm('Are you sure you want to delete this expense?');">
+         Delete
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
 
   <!-- GRAPH -->
   <canvas id="expenseChart" style="margin-top:30px;"></canvas>
