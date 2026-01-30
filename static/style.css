@@ -28,3 +28,7 @@ button {
   color: red;
   text-align: center;
 }
+a {
+  color: #4f46e5;
+  text-decoration: none;
+}
