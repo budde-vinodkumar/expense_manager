@@ -6,6 +6,18 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+<h3>Total Income: ₹ {{ income }}</h3>
+<h3>Total Expense: ₹ {{ total }}</h3>
+
+<h2 style="color:
+{% if balance >= 0 %}green{% else %}red{% endif %};">
+Balance: ₹ {{ balance }}
+</h2>
+
+<a href="/add-income">
+  <button>Add Income</button>
+</a>
+
 
 <div class="container" style="width:95%;">
   <h2>Expense Dashboard</h2>
