@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Income</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+  <h2>Add Income</h2>
+
+  <form method="post" action="/add-income">
+    <input type="number" name="amount" placeholder="Amount" required>
+    <input type="text" name="source" placeholder="Source (Salary, Freelance)" required>
+    <input type="date" name="date" required>
+    <button>Add Income</button>
+  </form>
+
+  <a href="/dashboard">Back to Dashboard</a>
+</div>
+
+</body>
+</html>
