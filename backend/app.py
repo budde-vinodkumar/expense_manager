@@ -44,9 +44,20 @@ def dashboard():
     if "user_id" not in session:
         return redirect("/")
 
-    expenses = get_expenses(session["user_id"])
-    total_expense = sum(float(e["amount"]) for e in expenses)
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+    category = request.args.get("category")
+    keyword = request.args.get("keyword")
 
+    expenses = get_expenses(
+        session["user_id"],
+        start_date=start_date,
+        end_date=end_date,
+        category=category,
+        keyword=keyword
+    )
+
+    total_expense = sum(float(e["amount"]) for e in expenses)
     total_income = get_total_income(session["user_id"])
     balance = total_income - total_expense
 
@@ -55,8 +66,13 @@ def dashboard():
         expenses=expenses,
         total=total_expense,
         income=total_income,
-        balance=balance
+        balance=balance,
+        selected_category=category,
+        keyword=keyword,
+        start_date=start_date,
+        end_date=end_date
     )
+
 
 
 
