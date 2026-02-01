@@ -12,6 +12,13 @@ def get_db_connection():
 def create_tables():
     conn = get_db_connection()
     cursor = conn.cursor()
+    cursor.execute("""
+CREATE TABLE IF NOT EXISTS budget (
+    user_id INTEGER PRIMARY KEY,
+    monthly_budget REAL NOT NULL
+)
+""")
+
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
