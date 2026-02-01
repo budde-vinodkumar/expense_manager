@@ -22,6 +22,11 @@ app.secret_key = "secret123"
 
 create_tables()
 
+@app.route("/set-budget", methods=["POST"])
+def set_budget_post():
+    return set_budget()
+
+
 
 @app.route("/")
 def login():
@@ -46,22 +51,18 @@ def dashboard():
     if "user_id" not in session:
         return redirect("/")
 
-    start_date = request.args.get("start_date")
-    end_date = request.args.get("end_date")
-    category = request.args.get("category")
-    keyword = request.args.get("keyword")
-
-    expenses = get_expenses(
-        session["user_id"],
-        start_date=start_date,
-        end_date=end_date,
-        category=category,
-        keyword=keyword
-    )
-
+    expenses = get_expenses(session["user_id"])
     total_expense = sum(float(e["amount"]) for e in expenses)
+
     total_income = get_total_income(session["user_id"])
     balance = total_income - total_expense
+
+    budget = get_budget(session["user_id"])
+    month_expense = get_current_month_expense(session["user_id"])
+
+    alert = False
+    if budget and month_expense > budget:
+        alert = True
 
     return render_template(
         "dashboard.html",
@@ -69,11 +70,11 @@ def dashboard():
         total=total_expense,
         income=total_income,
         balance=balance,
-        selected_category=category,
-        keyword=keyword,
-        start_date=start_date,
-        end_date=end_date
+        budget=budget,
+        month_expense=month_expense,
+        alert=alert
     )
+
 
 @app.route("/export-expenses")
 def export_expenses():
