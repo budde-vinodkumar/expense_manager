@@ -73,6 +73,36 @@ def dashboard():
         end_date=end_date
     )
 
+@app.route("/export-expenses")
+def export_expenses():
+    if "user_id" not in session:
+        return redirect("/")
+
+    expenses = get_expenses(session["user_id"])
+
+    def generate():
+        data = []
+        data.append(["Amount", "Category", "Date", "Description"])
+        for e in expenses:
+            data.append([
+                e["amount"],
+                e["category"],
+                e["date"],
+                e["description"]
+            ])
+
+        output = ""
+        writer = csv.writer(output := [])
+        for row in data:
+            yield ",".join(map(str, row)) + "\n"
+
+    return Response(
+        generate(),
+        mimetype="text/csv",
+        headers={
+            "Content-Disposition": "attachment; filename=expenses.csv"
+        }
+    )
 
 
 
