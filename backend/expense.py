@@ -110,3 +110,51 @@ def get_expenses(user_id, start_date=None, end_date=None, category=None, keyword
     expenses = cursor.execute(query, params).fetchall()
     conn.close()
     return expenses
+
+def set_budget():
+    if "user_id" not in session:
+        return redirect("/")
+
+    amount = request.form["amount"]
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO budget (user_id, monthly_budget)
+        VALUES (?, ?)
+        ON CONFLICT(user_id)
+        DO UPDATE SET monthly_budget=excluded.monthly_budget
+    """, (session["user_id"], amount))
+
+    conn.commit()
+    conn.close()
+    return redirect("/dashboard")
+
+
+def get_budget(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    result = cursor.execute(
+        "SELECT monthly_budget FROM budget WHERE user_id=?",
+        (user_id,)
+    ).fetchone()
+
+    conn.close()
+    return result[0] if result else None
+
+
+def get_current_month_expense(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    result = cursor.execute("""
+        SELECT SUM(amount)
+        FROM expenses
+        WHERE user_id=?
+        AND substr(date,1,7)=substr(date('now'),1,7)
+    """, (user_id,)).fetchone()
+
+    conn.close()
+    return result[0] if result[0] else 0
