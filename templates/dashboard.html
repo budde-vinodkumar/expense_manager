@@ -23,6 +23,22 @@ Balance: ₹ {{ balance }}
     Export Expenses (CSV)
   </button>
 </a>
+<h3>Monthly Budget</h3>
+
+<form method="post" action="/set-budget">
+  <input type="number" name="amount" placeholder="Set Monthly Budget"
+         value="{{ budget if budget }}" required>
+  <button>Save Budget</button>
+</form>
+
+<p>Current Month Expense: ₹ {{ month_expense }}</p>
+
+{% if alert %}
+  <p style="color:red; font-weight:bold;">
+    ⚠ Budget exceeded! Please control your spending.
+  </p>
+{% endif %}
+
 
 
 <div class="container" style="width:95%;">
