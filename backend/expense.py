@@ -86,3 +86,27 @@ def get_total_income(user_id):
     conn.close()
     return result[0] if result[0] else 0
 
+def get_expenses(user_id, start_date=None, end_date=None, category=None, keyword=None):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = "SELECT * FROM expenses WHERE user_id = ?"
+    params = [user_id]
+
+    if start_date and end_date:
+        query += " AND date BETWEEN ? AND ?"
+        params.extend([start_date, end_date])
+
+    if category and category != "All":
+        query += " AND category = ?"
+        params.append(category)
+
+    if keyword:
+        query += " AND description LIKE ?"
+        params.append(f"%{keyword}%")
+
+    query += " ORDER BY date DESC"
+
+    expenses = cursor.execute(query, params).fetchall()
+    conn.close()
+    return expenses
