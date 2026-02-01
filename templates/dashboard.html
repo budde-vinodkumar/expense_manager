@@ -23,6 +23,26 @@ Balance: ₹ {{ balance }}
   <h2>Expense Dashboard</h2>
   <h3>Total Expense: ₹ {{ total }}</h3>
 
+  <form method="get" action="/dashboard" style="margin-bottom:20px;">
+  <input type="date" name="start_date" value="{{ start_date }}">
+  <input type="date" name="end_date" value="{{ end_date }}">
+
+  <select name="category">
+    <option>All</option>
+    <option {% if selected_category=='Food' %}selected{% endif %}>Food</option>
+    <option {% if selected_category=='Travel' %}selected{% endif %}>Travel</option>
+    <option {% if selected_category=='Shopping' %}selected{% endif %}>Shopping</option>
+    <option {% if selected_category=='Other' %}selected{% endif %}>Other</option>
+  </select>
+
+  <input type="text" name="keyword" placeholder="Search description"
+         value="{{ keyword if keyword }}">
+
+  <button type="submit">Apply Filter</button>
+  <a href="/dashboard">Reset</a>
+</form>
+
+
   <!-- EXPENSE TABLE -->
   <table border="1" width="100%">
     <tr>
