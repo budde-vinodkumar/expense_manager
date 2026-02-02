@@ -10,6 +10,17 @@
 <h3>Total Expense: ₹ {{ total }}</h3>
 <h3 style="margin-top:40px;">Income vs Expense (Monthly)</h3>
 <canvas id="incomeExpenseChart"></canvas>
+{% if request.args.get("msg") == "expense_added" %}
+  <p style="color:green; font-weight:bold;">
+    ✔ Expense added successfully
+  </p>
+{% endif %}
+
+{% if request.args.get("msg") == "expense_deleted" %}
+  <p style="color:red; font-weight:bold;">
+    ✖ Expense deleted successfully
+  </p>
+{% endif %}
 
 <h2 style="color:
 {% if balance >= 0 %}green{% else %}red{% endif %};">
