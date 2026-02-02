@@ -86,11 +86,15 @@ def get_total_income(user_id):
     conn.close()
     return result[0] if result[0] else 0
 
-def get_expenses(user_id, start_date=None, end_date=None, category=None, keyword=None):
+def get_expenses(user_id, page=1, limit=5,
+                 start_date=None, end_date=None,
+                 category=None, keyword=None):
+
+    offset = (page - 1) * limit
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    query = "SELECT * FROM expenses WHERE user_id = ?"
+    query = "SELECT * FROM expenses WHERE user_id=?"
     params = [user_id]
 
     if start_date and end_date:
@@ -98,18 +102,20 @@ def get_expenses(user_id, start_date=None, end_date=None, category=None, keyword
         params.extend([start_date, end_date])
 
     if category and category != "All":
-        query += " AND category = ?"
+        query += " AND category=?"
         params.append(category)
 
     if keyword:
         query += " AND description LIKE ?"
         params.append(f"%{keyword}%")
 
-    query += " ORDER BY date DESC"
+    query += " ORDER BY date DESC LIMIT ? OFFSET ?"
+    params.extend([limit, offset])
 
     expenses = cursor.execute(query, params).fetchall()
     conn.close()
     return expenses
+
 
 def set_budget():
     if "user_id" not in session:
