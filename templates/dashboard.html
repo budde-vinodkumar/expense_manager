@@ -140,6 +140,18 @@ Balance: ₹ {{ balance }}
     </tr>
     {% endfor %}
   </table>
+  <div style="margin-top:15px; text-align:center;">
+  {% if page > 1 %}
+    <a href="/dashboard?page={{ page-1 }}">⬅ Prev</a>
+  {% endif %}
+
+  <span> Page {{ page }} of {{ total_pages }} </span>
+
+  {% if page < total_pages %}
+    <a href="/dashboard?page={{ page+1 }}">Next ➡</a>
+  {% endif %}
+</div>
+
 
   <!-- CHART SECTION -->
   <h3 style="margin-top:30px;">Expense Analysis</h3>
