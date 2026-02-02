@@ -158,3 +158,34 @@ def get_current_month_expense(user_id):
 
     conn.close()
     return result[0] if result[0] else 0
+
+def get_monthly_expense_summary(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    rows = cursor.execute("""
+        SELECT substr(date,1,7) AS month, SUM(amount) AS total
+        FROM expenses
+        WHERE user_id=?
+        GROUP BY month
+        ORDER BY month
+    """, (user_id,)).fetchall()
+
+    conn.close()
+    return rows
+
+
+def get_monthly_income_summary(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    rows = cursor.execute("""
+        SELECT substr(date,1,7) AS month, SUM(amount) AS total
+        FROM income
+        WHERE user_id=?
+        GROUP BY month
+        ORDER BY month
+    """, (user_id,)).fetchall()
+
+    conn.close()
+    return rows
