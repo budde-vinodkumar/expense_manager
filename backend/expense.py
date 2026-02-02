@@ -193,5 +193,18 @@ def get_monthly_income_summary(user_id):
         ORDER BY month
     """, (user_id,)).fetchall()
 
+    def get_expense_count(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    count = cursor.execute(
+        "SELECT COUNT(*) FROM expenses WHERE user_id=?",
+        (user_id,)
+    ).fetchone()[0]
+
+    conn.close()
+    return count
+
+
     conn.close()
     return rows
