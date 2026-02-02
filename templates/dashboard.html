@@ -8,6 +8,8 @@
 <body>
 <h3>Total Income: ₹ {{ income }}</h3>
 <h3>Total Expense: ₹ {{ total }}</h3>
+<h3 style="margin-top:40px;">Income vs Expense (Monthly)</h3>
+<canvas id="incomeExpenseChart"></canvas>
 
 <h2 style="color:
 {% if balance >= 0 %}green{% else %}red{% endif %};">
