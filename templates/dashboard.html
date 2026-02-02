@@ -41,6 +41,53 @@ Balance: ₹ {{ balance }}
   </p>
 {% endif %}
 
+<script>
+  const incomeData = {{ monthly_income | tojson }};
+  const expenseData = {{ monthly_expense | tojson }};
+
+  const months = new Set();
+
+  incomeData.forEach(i => months.add(i.month));
+  expenseData.forEach(e => months.add(e.month));
+
+  const labels = Array.from(months).sort();
+
+  const incomeMap = {};
+  incomeData.forEach(i => incomeMap[i.month] = i.total);
+
+  const expenseMap = {};
+  expenseData.forEach(e => expenseMap[e.month] = e.total);
+
+  const incomeValues = labels.map(m => incomeMap[m] || 0);
+  const expenseValues = labels.map(m => expenseMap[m] || 0);
+
+  new Chart(document.getElementById("incomeExpenseChart"), {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Income",
+          data: incomeValues,
+          backgroundColor: "#22c55e"
+        },
+        {
+          label: "Expense",
+          data: expenseValues,
+          backgroundColor: "#ef4444"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
 
 
 <div class="container" style="width:95%;">
