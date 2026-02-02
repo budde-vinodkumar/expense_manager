@@ -141,15 +141,28 @@ Balance: ₹ {{ balance }}
     {% endfor %}
   </table>
   <div style="margin-top:15px; text-align:center;">
-  {% if page > 1 %}
-    <a href="/dashboard?page={{ page-1 }}">⬅ Prev</a>
-  {% endif %}
+  {% if expenses %}
+  {% for e in expenses %}
+  <tr>
+    <td>₹ {{ e.amount }}</td>
+    <td>{{ e.category }}</td>
+    <td>{{ e.date }}</td>
+    <td>{{ e.description }}</td>
+    <td>
+      <a href="/edit-expense/{{ e.id }}">Edit</a> |
+      <a href="/delete-expense/{{ e.id }}"
+         onclick="return confirm('Delete this expense?');">Delete</a>
+    </td>
+  </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan="5" style="text-align:center; color:gray;">
+      No expenses found. Start by adding one.
+    </td>
+  </tr>
+{% endif %}
 
-  <span> Page {{ page }} of {{ total_pages }} </span>
-
-  {% if page < total_pages %}
-    <a href="/dashboard?page={{ page+1 }}">Next ➡</a>
-  {% endif %}
 </div>
 
 
