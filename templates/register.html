@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register</title>
+  <meta charset="UTF-8">
+  <title>Register | Expense Manager</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -10,19 +11,26 @@
   <h2>Create New Account</h2>
 
   {% if error %}
-    <p class="error">{{ error }}</p>
+    <div class="error">{{ error }}</div>
   {% endif %}
 
-  <form method="post" action="/register">
+  <form method="post" action="/register" id="registerForm">
     <input type="text" name="username" placeholder="Username" required>
     <input type="password" name="password" placeholder="Password" required>
-    <button type="submit">Register</button>
+
+    <button type="submit" id="registerBtn">Register</button>
   </form>
 
   <p style="text-align:center; margin-top:15px;">
     <a href="/">Back to Login</a>
   </p>
 </div>
+
+<!-- JS -->
+<script src="/static/app.js"></script>
+<script>
+  handleSubmit("registerBtn", "registerForm", "Creating Account...");
+</script>
 
 </body>
 </html>
