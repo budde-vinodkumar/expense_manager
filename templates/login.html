@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login</title>
+  <meta charset="UTF-8">
+  <title>Login | Expense Manager</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -10,21 +11,27 @@
   <h2>Expense Manager</h2>
 
   {% if error %}
-    <p class="error">{{ error }}</p>
+    <div class="error">{{ error }}</div>
   {% endif %}
 
-  <form method="post" action="/login">
+  <form method="post" action="/login" id="loginForm">
     <input type="text" name="username" placeholder="Username" required>
     <input type="password" name="password" placeholder="Password" required>
-    <button type="submit">Login</button>
+
+    <button type="submit" id="loginBtn">Login</button>
   </form>
 
-  <!-- THIS LINE WAS MISSING / HIDDEN -->
   <p style="text-align:center; margin-top:15px;">
     Don’t have an account?
     <a href="/register">Create New Account</a>
   </p>
 </div>
+
+<!-- JS -->
+<script src="/static/app.js"></script>
+<script>
+  handleSubmit("loginBtn", "loginForm", "Logging in...");
+</script>
 
 </body>
 </html>
