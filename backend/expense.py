@@ -1,6 +1,9 @@
 from flask import request, redirect, session, render_template
 from database import get_db_connection
 
+# --------------------
+# EXPENSE CRUD
+# --------------------
 def edit_expense(expense_id):
     if "user_id" not in session:
         return redirect("/")
@@ -9,7 +12,7 @@ def edit_expense(expense_id):
     cursor = conn.cursor()
 
     expense = cursor.execute(
-        "SELECT * FROM expenses WHERE id = ? AND user_id = ?",
+        "SELECT * FROM expenses WHERE id=? AND user_id=?",
         (expense_id, session["user_id"])
     ).fetchone()
 
@@ -18,16 +21,18 @@ def edit_expense(expense_id):
         return redirect("/dashboard")
 
     if request.method == "POST":
-        amount = request.form["amount"]
-        category = request.form["category"]
-        date = request.form["date"]
-        description = request.form["description"]
-
         cursor.execute("""
             UPDATE expenses
             SET amount=?, category=?, date=?, description=?
             WHERE id=? AND user_id=?
-        """, (amount, category, date, description, expense_id, session["user_id"]))
+        """, (
+            request.form["amount"],
+            request.form["category"],
+            request.form["date"],
+            request.form["description"],
+            expense_id,
+            session["user_id"]
+        ))
 
         conn.commit()
         conn.close()
@@ -45,7 +50,7 @@ def delete_expense(expense_id):
     cursor = conn.cursor()
 
     cursor.execute(
-        "DELETE FROM expenses WHERE id = ? AND user_id = ?",
+        "DELETE FROM expenses WHERE id=? AND user_id=?",
         (expense_id, session["user_id"])
     )
 
@@ -53,13 +58,13 @@ def delete_expense(expense_id):
     conn.close()
     return redirect("/dashboard")
 
+
+# --------------------
+# INCOME
+# --------------------
 def add_income():
     if "user_id" not in session:
         return redirect("/")
-
-    amount = request.form["amount"]
-    source = request.form["source"]
-    date = request.form["date"]
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -67,7 +72,12 @@ def add_income():
     cursor.execute("""
         INSERT INTO income (user_id, amount, source, date)
         VALUES (?, ?, ?, ?)
-    """, (session["user_id"], amount, source, date))
+    """, (
+        session["user_id"],
+        request.form["amount"],
+        request.form["source"],
+        request.form["date"]
+    ))
 
     conn.commit()
     conn.close()
@@ -84,8 +94,12 @@ def get_total_income(user_id):
     ).fetchone()
 
     conn.close()
-    return result[0] if result[0] else 0
+    return result[0] if result and result[0] else 0
 
+
+# --------------------
+# EXPENSE LIST + FILTER + PAGINATION
+# --------------------
 def get_expenses(user_id, page=1, limit=5,
                  start_date=None, end_date=None,
                  category=None, keyword=None):
@@ -117,11 +131,25 @@ def get_expenses(user_id, page=1, limit=5,
     return expenses
 
 
+def get_expense_count(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    count = cursor.execute(
+        "SELECT COUNT(*) FROM expenses WHERE user_id=?",
+        (user_id,)
+    ).fetchone()[0]
+
+    conn.close()
+    return count
+
+
+# --------------------
+# BUDGET
+# --------------------
 def set_budget():
     if "user_id" not in session:
         return redirect("/")
-
-    amount = request.form["amount"]
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -131,7 +159,7 @@ def set_budget():
         VALUES (?, ?)
         ON CONFLICT(user_id)
         DO UPDATE SET monthly_budget=excluded.monthly_budget
-    """, (session["user_id"], amount))
+    """, (session["user_id"], request.form["amount"]))
 
     conn.commit()
     conn.close()
@@ -163,8 +191,12 @@ def get_current_month_expense(user_id):
     """, (user_id,)).fetchone()
 
     conn.close()
-    return result[0] if result[0] else 0
+    return result[0] if result and result[0] else 0
 
+
+# --------------------
+# ANALYTICS
+# --------------------
 def get_monthly_expense_summary(user_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -192,19 +224,6 @@ def get_monthly_income_summary(user_id):
         GROUP BY month
         ORDER BY month
     """, (user_id,)).fetchall()
-
-    def get_expense_count(user_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    count = cursor.execute(
-        "SELECT COUNT(*) FROM expenses WHERE user_id=?",
-        (user_id,)
-    ).fetchone()[0]
-
-    conn.close()
-    return count
-
 
     conn.close()
     return rows
