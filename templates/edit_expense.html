@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Edit Expense</title>
+  <meta charset="UTF-8">
+  <title>Edit Expense | Expense Manager</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -9,16 +10,25 @@
 <div class="container">
   <h2>Edit Expense</h2>
 
-  <form method="post">
+  <form method="post" id="editExpenseForm">
     <input type="number" name="amount" value="{{ expense.amount }}" required>
     <input type="text" name="category" value="{{ expense.category }}" required>
     <input type="date" name="date" value="{{ expense.date }}" required>
     <input type="text" name="description" value="{{ expense.description }}">
-    <button type="submit">Update Expense</button>
+
+    <button type="submit" id="updateExpenseBtn">
+      Update Expense
+    </button>
   </form>
 
   <a href="/dashboard">Back to Dashboard</a>
 </div>
+
+<!-- JS -->
+<script src="/static/app.js"></script>
+<script>
+  handleSubmit("updateExpenseBtn", "editExpenseForm", "Updating...");
+</script>
 
 </body>
 </html>
