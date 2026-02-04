@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Add Income</title>
+  <meta charset="UTF-8">
+  <title>Add Income | Expense Manager</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -9,15 +10,24 @@
 <div class="container">
   <h2>Add Income</h2>
 
-  <form method="post" action="/add-income">
+  <form method="post" action="/add-income" id="incomeForm">
     <input type="number" name="amount" placeholder="Amount" required>
     <input type="text" name="source" placeholder="Source (Salary, Freelance)" required>
     <input type="date" name="date" required>
-    <button>Add Income</button>
+
+    <button type="submit" id="addIncomeBtn">
+      Add Income
+    </button>
   </form>
 
   <a href="/dashboard">Back to Dashboard</a>
 </div>
+
+<!-- JS -->
+<script src="/static/app.js"></script>
+<script>
+  handleSubmit("addIncomeBtn", "incomeForm", "Adding Income...");
+</script>
 
 </body>
 </html>
