@@ -1,132 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Dashboard | Expense Manager</title>
   <link rel="stylesheet" href="/static/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<h3>Total Income: ₹ {{ income }}</h3>
-<h3>Total Expense: ₹ {{ total }}</h3>
-<h3 style="margin-top:40px;">Income vs Expense (Monthly)</h3>
-<canvas id="incomeExpenseChart"></canvas>
-{% if request.args.get("msg") == "expense_added" %}
-  <p style="color:green; font-weight:bold;">
-    ✔ Expense added successfully
-  </p>
-{% endif %}
-
-{% if request.args.get("msg") == "expense_deleted" %}
-  <p style="color:red; font-weight:bold;">
-    ✖ Expense deleted successfully
-  </p>
-{% endif %}
-
-<h2 style="color:
-{% if balance >= 0 %}green{% else %}red{% endif %};">
-Balance: ₹ {{ balance }}
-</h2>
-
-<a href="/add-income">
-  <button>Add Income</button>
-</a>
-
-<a href="/export-expenses">
-  <button style="background:#22c55e; margin-bottom:15px;">
-    Export Expenses (CSV)
-  </button>
-</a>
-<h3>Monthly Budget</h3>
-
-<form method="post" action="/set-budget">
-  <input type="number" name="amount" placeholder="Set Monthly Budget"
-         value="{{ budget if budget }}" required>
-  <button>Save Budget</button>
-</form>
-
-<p>Current Month Expense: ₹ {{ month_expense }}</p>
-
-{% if alert %}
-  <p style="color:red; font-weight:bold;">
-    ⚠ Budget exceeded! Please control your spending.
-  </p>
-{% endif %}
-
-<script>
-  const incomeData = {{ monthly_income | tojson }};
-  const expenseData = {{ monthly_expense | tojson }};
-
-  const months = new Set();
-
-  incomeData.forEach(i => months.add(i.month));
-  expenseData.forEach(e => months.add(e.month));
-
-  const labels = Array.from(months).sort();
-
-  const incomeMap = {};
-  incomeData.forEach(i => incomeMap[i.month] = i.total);
-
-  const expenseMap = {};
-  expenseData.forEach(e => expenseMap[e.month] = e.total);
-
-  const incomeValues = labels.map(m => incomeMap[m] || 0);
-  const expenseValues = labels.map(m => expenseMap[m] || 0);
-
-  new Chart(document.getElementById("incomeExpenseChart"), {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Income",
-          data: incomeValues,
-          backgroundColor: "#22c55e"
-        },
-        {
-          label: "Expense",
-          data: expenseValues,
-          backgroundColor: "#ef4444"
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  });
-</script>
-
 
 <div class="container" style="width:95%;">
+
   <h2>Expense Dashboard</h2>
+
+  <!-- MESSAGES -->
+  {% if request.args.get("msg") == "expense_added" %}
+    <div class="success">✔ Expense added successfully</div>
+  {% endif %}
+  {% if request.args.get("msg") == "expense_deleted" %}
+    <div class="error">✖ Expense deleted successfully</div>
+  {% endif %}
+
+  <!-- SUMMARY -->
+  <h3>Total Income: ₹ {{ income }}</h3>
   <h3>Total Expense: ₹ {{ total }}</h3>
+  <h2 style="color:{% if balance >= 0 %}green{% else %}red{% endif %};">
+    Balance: ₹ {{ balance }}
+  </h2>
 
-  <form method="get" action="/dashboard" style="margin-bottom:20px;">
-  <input type="date" name="start_date" value="{{ start_date }}">
-  <input type="date" name="end_date" value="{{ end_date }}">
+  <!-- BUDGET -->
+  <h3>Monthly Budget</h3>
+  <form method="post" action="/set-budget">
+    <input type="number" name="amount" placeholder="Set Monthly Budget"
+           value="{{ budget if budget }}" required>
+    <button>Save Budget</button>
+  </form>
 
-  <select name="category">
-    <option>All</option>
-    <option {% if selected_category=='Food' %}selected{% endif %}>Food</option>
-    <option {% if selected_category=='Travel' %}selected{% endif %}>Travel</option>
-    <option {% if selected_category=='Shopping' %}selected{% endif %}>Shopping</option>
-    <option {% if selected_category=='Other' %}selected{% endif %}>Other</option>
-  </select>
+  <p>Current Month Expense: ₹ {{ month_expense }}</p>
+  {% if alert %}
+    <p style="color:red; font-weight:bold;">
+      ⚠ Budget exceeded! Please control your spending.
+    </p>
+  {% endif %}
 
-  <input type="text" name="keyword" placeholder="Search description"
-         value="{{ keyword if keyword }}">
+  <!-- ACTION BUTTONS -->
+  <a href="/add-income"><button>Add Income</button></a>
+  <a href="/add-expense"><button>Add Expense</button></a>
+  <a href="/export-expenses">
+    <button style="background:#22c55e;">Export Expenses (CSV)</button>
+  </a>
 
-  <button type="submit">Apply Filter</button>
-  <a href="/dashboard">Reset</a>
-</form>
+  <!-- FILTER -->
+  <form method="get" action="/dashboard" style="margin:20px 0;">
+    <input type="date" name="start_date" value="{{ start_date }}">
+    <input type="date" name="end_date" value="{{ end_date }}">
 
+    <select name="category">
+      <option>All</option>
+      <option {% if selected_category=='Food' %}selected{% endif %}>Food</option>
+      <option {% if selected_category=='Travel' %}selected{% endif %}>Travel</option>
+      <option {% if selected_category=='Shopping' %}selected{% endif %}>Shopping</option>
+      <option {% if selected_category=='Other' %}selected{% endif %}>Other</option>
+    </select>
+
+    <input type="text" name="keyword" placeholder="Search description"
+           value="{{ keyword if keyword }}">
+
+    <button type="submit">Apply Filter</button>
+    <a href="/dashboard">Reset</a>
+  </form>
 
   <!-- EXPENSE TABLE -->
-  <table border="1" width="100%">
+  <table>
     <tr>
       <th>Amount</th>
       <th>Category</th>
@@ -135,84 +79,64 @@ Balance: ₹ {{ balance }}
       <th>Actions</th>
     </tr>
 
-    {% for e in expenses %}
-    <tr>
-      <td>₹ {{ e.amount }}</td>
-      <td>{{ e.category }}</td>
-      <td>{{ e.date }}</td>
-      <td>{{ e.description }}</td>
-      <td>
-        <a href="/edit-expense/{{ e.id }}">Edit</a> |
-        <a href="/delete-expense/{{ e.id }}"
-           onclick="return confirm('Delete this expense?');">
-           Delete
-        </a>
-      </td>
-    </tr>
-    {% endfor %}
+    {% if expenses %}
+      {% for e in expenses %}
+      <tr>
+        <td>₹ {{ e.amount }}</td>
+        <td>{{ e.category }}</td>
+        <td>{{ e.date }}</td>
+        <td>{{ e.description }}</td>
+        <td>
+          <a href="/edit-expense/{{ e.id }}">Edit</a> |
+          <a href="/delete-expense/{{ e.id }}"
+             onclick="return confirm('Delete this expense?');">
+             Delete
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="5" style="text-align:center; color:gray;">
+          No expenses found. Start by adding one.
+        </td>
+      </tr>
+    {% endif %}
   </table>
-  <div style="margin-top:15px; text-align:center;">
-  {% if expenses %}
-  {% for e in expenses %}
-  <tr>
-    <td>₹ {{ e.amount }}</td>
-    <td>{{ e.category }}</td>
-    <td>{{ e.date }}</td>
-    <td>{{ e.description }}</td>
-    <td>
-      <a href="/edit-expense/{{ e.id }}">Edit</a> |
-      <a href="/delete-expense/{{ e.id }}"
-         onclick="return confirm('Delete this expense?');">Delete</a>
-    </td>
-  </tr>
-  {% endfor %}
-{% else %}
-  <tr>
-    <td colspan="5" style="text-align:center; color:gray;">
-      No expenses found. Start by adding one.
-    </td>
-  </tr>
-{% endif %}
 
-</div>
+  <!-- CHARTS -->
+  <h3 style="margin-top:40px;">Income vs Expense (Monthly)</h3>
+  <canvas id="incomeExpenseChart"></canvas>
 
-
-  <!-- CHART SECTION -->
-  <h3 style="margin-top:30px;">Expense Analysis</h3>
-
+  <h3 style="margin-top:40px;">Expense Analysis</h3>
   <div style="display:flex; gap:30px; flex-wrap:wrap;">
     <div style="width:400px;">
       <h4>Category-wise Expense</h4>
       <canvas id="categoryChart"></canvas>
     </div>
-
     <div style="width:500px;">
       <h4>Monthly Expense</h4>
       <canvas id="monthlyChart"></canvas>
     </div>
   </div>
 
-  <a href="/add-expense">
-    <button style="margin-top:20px;">Add Expense</button>
+  <a href="/logout">
+    <button style="background:#ef4444; margin-top:20px;">Logout</button>
   </a>
 
-  <a href="/logout">
-    <button style="background:#ef4444; margin-top:10px;">Logout</button>
-  </a>
 </div>
 
+<!-- CHART SCRIPTS -->
 <script>
-  // DATA FROM BACKEND
   const expenses = {{ expenses | tojson }};
+  const monthlyIncome = {{ monthly_income | tojson }};
+  const monthlyExpense = {{ monthly_expense | tojson }};
 
-  // -------------------------
-  // CATEGORY-WISE CALCULATION
-  // -------------------------
+  // CATEGORY PIE
   const categoryTotals = {};
   expenses.forEach(e => {
-    const cat = e.category;
-    const amt = parseFloat(e.amount);
-    categoryTotals[cat] = (categoryTotals[cat] || 0) + amt;
+    categoryTotals[e.category] =
+      (categoryTotals[e.category] || 0) + parseFloat(e.amount);
   });
 
   new Chart(document.getElementById("categoryChart"), {
@@ -221,4 +145,54 @@ Balance: ₹ {{ balance }}
       labels: Object.keys(categoryTotals),
       datasets: [{
         data: Object.values(categoryTotals),
-        backgroundColor: [
+        backgroundColor: ["#6366f1","#22c55e","#f59e0b","#ef4444","#14b8a6"]
+      }]
+    }
+  });
+
+  // MONTHLY BAR
+  const monthTotals = {};
+  expenses.forEach(e => {
+    const m = e.date.substring(0,7);
+    monthTotals[m] = (monthTotals[m] || 0) + parseFloat(e.amount);
+  });
+
+  new Chart(document.getElementById("monthlyChart"), {
+    type: "bar",
+    data: {
+      labels: Object.keys(monthTotals),
+      datasets: [{
+        label: "Monthly Expense",
+        data: Object.values(monthTotals),
+        backgroundColor: "#4f46e5"
+      }]
+    }
+  });
+
+  // INCOME VS EXPENSE
+  const months = new Set();
+  monthlyIncome.forEach(i => months.add(i.month));
+  monthlyExpense.forEach(e => months.add(e.month));
+
+  const labels = Array.from(months).sort();
+  const incomeMap = {};
+  const expenseMap = {};
+
+  monthlyIncome.forEach(i => incomeMap[i.month] = i.total);
+  monthlyExpense.forEach(e => expenseMap[e.month] = e.total);
+
+  new Chart(document.getElementById("incomeExpenseChart"), {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        { label: "Income", data: labels.map(m => incomeMap[m] || 0), backgroundColor:"#22c55e" },
+        { label: "Expense", data: labels.map(m => expenseMap[m] || 0), backgroundColor:"#ef4444" }
+      ]
+    },
+    options: { scales: { y: { beginAtZero:true } } }
+  });
+</script>
+
+</body>
+</html>
