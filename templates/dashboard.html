@@ -42,6 +42,14 @@
     </p>
   {% endif %}
 
+  <h3>Download Monthly Report</h3>
+
+<form method="get" action="/download-report">
+  <input type="month" name="month" required>
+  <button type="submit">Download PDF</button>
+</form>
+
+
   <!-- ACTION BUTTONS -->
   <a href="/add-income"><button>Add Income</button></a>
   <a href="/add-expense"><button>Add Expense</button></a>
