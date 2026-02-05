@@ -1,3 +1,9 @@
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from io import BytesIO
+from flask import send_file
+from datetime import datetime
+
 from flask import (
     Flask, render_template,
     session, redirect, request, Response
@@ -161,6 +167,88 @@ def export_expenses():
         headers={
             "Content-Disposition": "attachment; filename=expenses.csv"
         }
+    )
+
+@app.route("/download-report")
+def download_report():
+    if "user_id" not in session:
+        return redirect("/")
+
+    month = request.args.get("month")  # format: YYYY-MM
+    if not month:
+        return redirect("/dashboard")
+
+    user_id = session["user_id"]
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    expenses = cursor.execute("""
+        SELECT amount, category, date, description
+        FROM expenses
+        WHERE user_id=?
+        AND substr(date,1,7)=?
+    """, (user_id, month)).fetchall()
+
+    income = cursor.execute("""
+        SELECT SUM(amount)
+        FROM income
+        WHERE user_id=?
+        AND substr(date,1,7)=?
+    """, (user_id, month)).fetchone()[0] or 0
+
+    total_expense = sum(float(e["amount"]) for e in expenses)
+    balance = income - total_expense
+
+    conn.close()
+
+    # PDF creation
+    buffer = BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+
+    y = height - 50
+
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(50, y, "Monthly Expense Report")
+    y -= 30
+
+    pdf.setFont("Helvetica", 11)
+    pdf.drawString(50, y, f"Month: {month}")
+    y -= 20
+    pdf.drawString(50, y, f"Total Income: ₹ {income}")
+    y -= 20
+    pdf.drawString(50, y, f"Total Expense: ₹ {total_expense}")
+    y -= 20
+    pdf.drawString(50, y, f"Balance: ₹ {balance}")
+    y -= 30
+
+    pdf.setFont("Helvetica-Bold", 12)
+    pdf.drawString(50, y, "Expenses:")
+    y -= 20
+
+    pdf.setFont("Helvetica", 10)
+
+    for e in expenses:
+        line = f"{e['date']} | {e['category']} | ₹{e['amount']} | {e['description']}"
+        pdf.drawString(50, y, line)
+        y -= 15
+
+        if y < 50:
+            pdf.showPage()
+            pdf.setFont("Helvetica", 10)
+            y = height - 50
+
+    pdf.showPage()
+    pdf.save()
+
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=f"expense_report_{month}.pdf",
+        mimetype="application/pdf"
     )
 
 
