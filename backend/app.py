@@ -148,6 +148,11 @@ def add_income_post():
 def set_budget_post():
     return set_budget()
 
+@app.route("/set-category-budget", methods=["POST"])
+def set_category_budget_post():
+    return set_category_budget()
+
+
 
 # --------------------
 # Export CSV
