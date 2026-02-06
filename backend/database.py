@@ -14,6 +14,7 @@ def create_tables():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+
     # USERS
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
@@ -56,6 +57,7 @@ def create_tables():
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )
     """)
+
 
     conn.commit()
     conn.close()

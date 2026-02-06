@@ -265,3 +265,54 @@ def test():
 # --------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
+def set_category_budget():
+    if "user_id" not in session:
+        return redirect("/")
+
+    category = request.form["category"]
+    limit_amount = request.form["limit"]
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO category_budget (user_id, category, limit_amount)
+        VALUES (?, ?, ?)
+        ON CONFLICT(user_id, category)
+        DO UPDATE SET limit_amount=excluded.limit_amount
+    """, (session["user_id"], category, limit_amount))
+
+    conn.commit()
+    conn.close()
+    return redirect("/dashboard")
+
+
+def get_category_budgets(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    rows = cursor.execute("""
+        SELECT category, limit_amount
+        FROM category_budget
+        WHERE user_id=?
+    """, (user_id,)).fetchall()
+
+    conn.close()
+    return rows
+
+
+def get_category_expense_current_month(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    rows = cursor.execute("""
+        SELECT category, SUM(amount) as total
+        FROM expenses
+        WHERE user_id=?
+        AND substr(date,1,7)=substr(date('now'),1,7)
+        GROUP BY category
+    """, (user_id,)).fetchall()
+
+    conn.close()
+    return rows
