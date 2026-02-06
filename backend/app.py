@@ -18,6 +18,9 @@ from expense import (
     add_income, get_total_income,
     set_budget, get_budget, get_current_month_expense,
     get_monthly_expense_summary, get_monthly_income_summary
+    set_category_budget,
+    get_category_budgets,
+    get_category_expense_current_month
 )
 
 # --------------------
