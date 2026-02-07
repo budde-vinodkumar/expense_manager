@@ -42,6 +42,15 @@
     </p>
   {% endif %}
 
+  <h3>Category Budget</h3>
+
+<form method="post" action="/set-category-budget">
+  <input type="text" name="category" placeholder="Category (Food, Travel)" required>
+  <input type="number" name="limit" placeholder="Limit Amount" required>
+  <button>Save Category Budget</button>
+</form>
+
+
   <h3>Download Monthly Report</h3>
 
 <form method="get" action="/download-report">
