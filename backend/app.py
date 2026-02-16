@@ -324,3 +324,39 @@ def get_category_expense_current_month(user_id):
 
     conn.close()
     return rows
+ alerts = []
+
+# Negative balance alert
+if balance < 0:
+    alerts.append({
+        "type": "danger",
+        "message": "Your balance is negative. You are overspending."
+    })
+
+# Monthly budget exceeded
+if budget and month_expense > budget:
+    alerts.append({
+        "type": "danger",
+        "message": f"Monthly budget exceeded (₹{month_expense} / ₹{budget})"
+    })
+
+# Category budget alerts
+for a in category_alerts:
+    alerts.append({
+        "type": "warning",
+        "message": f"{a['category']} exceeded limit (₹{a['spent']} / ₹{a['limit']})"
+    })
+
+# High spending detection (optional smart logic)
+if month_expense > (budget or 0) * 0.8 and budget:
+    alerts.append({
+        "type": "info",
+        "message": "You have used more than 80% of your monthly budget."
+    })
+
+# Positive financial state
+if balance > 0 and month_expense < (budget or float("inf")):
+    alerts.append({
+        "type": "success",
+        "message": "Good job! Your spending is under control."
+    })
