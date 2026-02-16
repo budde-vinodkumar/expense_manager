@@ -49,6 +49,17 @@
   <input type="number" name="limit" placeholder="Limit Amount" required>
   <button>Save Category Budget</button>
 </form>
+{% if alerts %}
+  <div style="margin-bottom:20px;">
+    <h3>Notifications</h3>
+
+    {% for alert in alerts %}
+      <div class="alert {{ alert.type }}">
+        {{ alert.message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
 
 
   <h3>Download Monthly Report</h3>
