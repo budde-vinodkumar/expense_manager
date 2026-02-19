@@ -57,6 +57,7 @@ def create_tables():
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )
     """)
+    
 
 
     conn.commit()

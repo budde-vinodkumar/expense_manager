@@ -360,3 +360,8 @@ if balance > 0 and month_expense < (budget or float("inf")):
         "type": "success",
         "message": "Good job! Your spending is under control."
     })
+if balance > 0 and month_expense < (budget or float("inf")):
+    alerts.append({
+        "type": "success",
+        "message": "Good job! Your spending is under control."
+    })  
