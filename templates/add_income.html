@@ -22,7 +22,11 @@
 
   <a href="/dashboard">Back to Dashboard</a>
 </div>
-
+<div>
+<form method="post" action="/delete-income/{{ income.id }}">
+  <button type="submit" id="deleteIncomeBtn" style="background-color:#e74c3c;">
+    Delete Income
+  </button>
 <!-- JS -->
 <script src="/static/app.js"></script>
 <script>
