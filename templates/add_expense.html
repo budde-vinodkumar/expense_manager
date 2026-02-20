@@ -23,6 +23,11 @@
 
   <a href="/dashboard">Back to Dashboard</a>
 </div>
+<div>
+<form method="post" action="/delete-expense/{{ expense.id }}">
+  <button type="submit" id="deleteExpenseBtn" style="background-color:#e74c3c;">
+    Delete Expense
+  </button>
 
 <!-- JS -->
 <script src="/static/app.js"></script>
